@@ -12,12 +12,12 @@
                         <div class="col-md-offset-5 col-md-2">
                             <h2>{{ucwords(Auth::user()->name)}}</h2>
                         </div>
+                        <a href="{{ route('newAd') }}">
                         <div class="col-md-offset-3 col-md-2 text-center">
-                            <a href="#">
                                 <p>new add</p>
                                 <i class="fa fa-plus" aria-hidden="true"></i>
-                            </a>
-                        </div>  
+                            </div>
+                        </a>
                     </div>
                     <div class="row">
                         @foreach($ads as $ad)
