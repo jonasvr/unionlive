@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Ad;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CreateAdRequest;
        
 class ProfileController extends Controller
 {
@@ -34,9 +35,22 @@ class ProfileController extends Controller
         return view('profile.newAd');
     }
 
-    public function createAd(Request $request)
+    public function createAd(CreateAdRequest $request)
     {
-        dd($request->all());
-    	// $this->ad->create()
+        $artFile = $request->file('artFile')->store('art');
+        $audioFile = $request->file('audioFile')->store('audio');
+        $dbData = [
+            'path_art' => $artFile,
+            'path_audio' => $audioFile,
+            'title' => $request->title,
+            'user_id' => Auth::id(),
+        ];
+
+
+       if($this->ad->create($dbData)){
+            return redirect('dashboard')->with('success', 'ad added!');
+       } else {
+            return back()->with('error', 'something went wrong, try again');
+       }
     }
 }

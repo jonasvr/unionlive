@@ -18,7 +18,7 @@ class CreateAdTable extends Migration
             $table->string('title');
             $table->integer('user_id');
             $table->string('path_audio');
-            $table->string('path_artwork');
+            $table->string('path_art');
             $table->timestamps();
         });
     }

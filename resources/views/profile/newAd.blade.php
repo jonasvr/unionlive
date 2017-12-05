@@ -16,20 +16,35 @@
                     <div class="row">
                         <div class="col-md-offset-1 col-md-10">
                             {{ Form::open(array('url' => route('createAd'), 'method' => 'POST', "class" => "form-horizontal","files"=>true)) }}
-                                <div class="form-group">
+
+                                <div class="form-group {{ $errors->has('title') ? ' has-error' : '' }}">
                                     <label for="title">Title</label>
                                     {{ Form::text('title', '', array('class' => 'form-control','placeholder' => 'Title')) }}
-                                    <!-- <input type="text" class="form-control" id="title" placeholder="Title"> -->
+                                    @if ($errors->has('title'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('title') }}</strong>
+                                    </span>
+                                @endif
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 {{ $errors->has('audioFile') ? ' has-error' : '' }}">
                                     <label for="audioFile">Aduio file input</label>
                                     {{ Form::file('audioFile') }}
                                     <p class="help-block">Only wav files</p>
+                                    @if ($errors->has('audioFile'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('audioFile') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 {{ $errors->has('artFile') ? ' has-error' : '' }}">
                                     <label for="artFile">Artwork input</label>
                                     {{ Form::file('artFile') }}
                                     <p class="help-block">Only jpg,png</p>
+                                    @if ($errors->has('artFile'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('artFile') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
                                     <button type="submit" class="btn btn-default">Submit</button>
                             {{ Form::close()}}

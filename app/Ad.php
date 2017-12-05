@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ad extends Model
 {
     protected $fillable = [
-        'id', 'title','created_at'
+        'id', 'title','path_art','path_audio','user_id'
     ];
 
     protected $table = 'ad';

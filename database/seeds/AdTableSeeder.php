@@ -17,7 +17,7 @@ class AdTableSeeder extends Seeder
             	'title' => str_random(10),
             	'user_id' => 1,
             	'path_audio' => "test",
-            	'path_artwork' => "test",
+            	'path_art' => "test",
         	]);
     	}
     }
