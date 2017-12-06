@@ -7,12 +7,13 @@ use App\User;
 use App\Ad;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateAdRequest;
+use Storage;
        
 class ProfileController extends Controller
 {
 
-	private $user;
-	private $ad;
+	protected $user,$ad;
+    Private $disk = 'uploads';
 
     public function __construct(User $user, Ad $ad)
     {
@@ -37,8 +38,8 @@ class ProfileController extends Controller
 
     public function createAd(CreateAdRequest $request)
     {
-        $artFile = $request->file('artFile')->store('art');
-        $audioFile = $request->file('audioFile')->store('audio');
+        $artFile = Storage::disk('uploads')->put('art', $request->file('artFile'));
+        $audioFile = Storage::disk('uploads')->put('audioFile', $request->file('audioFile'));
         $dbData = [
             'path_art' => $artFile,
             'path_audio' => $audioFile,
@@ -48,9 +49,26 @@ class ProfileController extends Controller
 
 
        if($this->ad->create($dbData)){
-            return redirect('dashboard')->with('success', 'ad added!');
+            return redirect('profile')->with('success', 'ad added!');
        } else {
             return back()->with('error', 'something went wrong, try again');
        }
+    }
+
+    public function showAd($id)
+    {
+        $ad = $this->ad->find($id);
+        $data = [
+            'path_art' => $this->buildUrl($ad->path_art),
+            'path_audio' => $this->buildUrl($ad->path_audio),
+            'title' => $ad->title,
+        ];
+
+        return view('profile.ad',$data);
+    }
+
+    private function buildUrl($path)
+    {
+        return $this->disk.'/'.$path;
     }
 }

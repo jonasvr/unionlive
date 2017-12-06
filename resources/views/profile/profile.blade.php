@@ -24,9 +24,11 @@
                     </div>
                     <div class="row">
                         @foreach($ads as $ad)
-                            <div class="col-md-offset-2 col-md-8 text-center red-border margin-bottom-5">
-                                <p>{{$ad->title}}</p>
-                            </div>
+                            <a href="{{route('showAd',['id'=>$ad->id])}}">
+                                <div class="col-md-offset-2 col-md-8 text-center red-border margin-bottom-5">
+                                    <p>{{$ad->title}}</p>
+                                </div>
+                            </a>
                         @endforeach
                     </div>
                 </div>

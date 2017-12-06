@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', ['as' => 'profile', 'uses' => 'ProfileController@index']);
         Route::get('/ad/new', ['as' => 'newAd', 'uses' => 'ProfileController@newAd']);
         Route::post('/ad/new', ['as' => 'createAd', 'uses' => 'ProfileController@createAd']);
-    });
-	
+        Route::get('/ad/show/{id}', ['as' => 'showAd', 'uses' => 'ProfileController@showAd']);
+    });	
 
 });
