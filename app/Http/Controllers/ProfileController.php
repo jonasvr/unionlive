@@ -60,10 +60,10 @@ class ProfileController extends Controller
         $ad = $this->ad->find($id);
         $data = [
             'path_art' => $this->buildUrl($ad->path_art),
-            'path_audio' => $this->buildUrl($ad->path_audio),
+            'path_audio' => url('/').'/'.$this->buildUrl($ad->path_audio),
             'title' => $ad->title,
         ];
-
+        
         return view('profile.ad',$data);
     }
 

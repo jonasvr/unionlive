@@ -25,7 +25,7 @@ class CreateAdRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'artFile' => 'required|mimes:jpeg,png',
+            'artFile' => 'required|mimes:jpeg,jpg,png',
             'audioFile' => 'required|mimes:wav',
         ];
     }
