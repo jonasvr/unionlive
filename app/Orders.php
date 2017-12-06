@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Ad extends Model
+class Orders extends Model
 {
     protected $fillable = [
-        'id', 'title','path_art','path_audio','user_id'
+        'id', 'price','payed','payed_at','user_id','ad_id'
     ];
 
-    protected $table = 'ad';
+    protected $table = 'orders';
 
     public function user()
     {
@@ -20,10 +20,5 @@ class Ad extends Model
     public function shedule()
     {
         return $this->hasMany('App\Shedule');
-    }
-
-    public function order()
-    {
-        return $this->hasOne('App\Orders');
     }
 }

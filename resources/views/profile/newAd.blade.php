@@ -46,7 +46,43 @@
                                         </span>
                                     @endif
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group col-md-8">
+                                      <label for="weeks">weeks</label>
+                                      <select id="weeks" name="weeks" class="form-control">
+                                        @for($i = 1; $i<5; $i++)
+                                            @if($i == 1)
+                                                <option value="{{$i}}" selected>{{$i}}</option>
+                                            @else
+                                                <option value="{{$i}}">{{$i}}</option>
+                                            @endif
+                                        @endfor
+                                      </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    @foreach($days as $day)
+                                       <div class="form-check form-check-inline">
+                                          <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="days[]" value="{{$day->day}}"> {{$day->day}}
+                                          </label>
+                                        </div>
+
+                                    @endforeach
+                                </div>
+                                <div class="col-md-4">
+                                    @foreach($hours as $hour)
+                                        <div class="form-check form-check-inline">
+                                          <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="hours[]" value="{{$hour->timeSlot}}"> {{$hour->timeSlot}}
+                                          </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <div class="col-md-12">
                                     <button type="submit" class="btn btn-default">Submit</button>
+                                </div>
                             {{ Form::close()}}
                         </div>
                     </div>
