@@ -14,14 +14,25 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-
-                            {{ Html::image($path_art,'art work',['class' => 'img-responsive']) }}                            
-                        </div>
-                        <div class="col-md-6">
-                            <audio controls>
-                              <source src={{$path_audio}} type="audio/wav">
-                            </audio>
+                        <div class="col-md-offset-3 col-md-6">
+                            <div class="col-md-12">
+                                {{ Html::image($path_art,'art work',['class' => 'img-responsive']) }} 
+                            </div>                           
+                            <div class="col-md-12 text-center">
+                                <audio controls>
+                                  <source src={{$path_audio}} type="audio/wav">
+                                </audio>
+                            </div>
+                            <div class="col-md-12">
+                                <pre>
+                                {{var_dump($order)}}
+                                </pre>
+                            </div>
+                            <div class="col-md-12">
+                                <pre>
+                                {{var_dump($shedule)}}
+                                </pre>
+                            </div>
                         </div>
                     </div>
                 </div>
