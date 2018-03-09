@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'UnionLive'),
 
     /*
     |--------------------------------------------------------------------------
@@ -233,7 +233,7 @@ return [
         /**
          * By Jonas Van Reeth
          */
-        
+
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
 
