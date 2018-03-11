@@ -18,6 +18,7 @@ class User extends Authenticatable
         'name', 'email', 'password','email_token'
     ];
 
+    protected $table = "users";
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -36,4 +37,6 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Shedule');
     }
+
+
 }
