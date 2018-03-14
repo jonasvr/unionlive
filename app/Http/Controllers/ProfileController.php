@@ -13,11 +13,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateAdRequest;
 use Storage;
-       
+
 class ProfileController extends Controller
 {
 
-	protected $user, $ad, $hours, $days, $orders, $shedule;
+    protected $user, $ad, $hours, $days, $orders, $shedule;
     Private $disk = 'uploads';
 
     public function __construct(User $user, Ad $ad, Days $days, Hours $hours, Shedule $shedule, Orders $orders)
@@ -32,12 +32,12 @@ class ProfileController extends Controller
 
     public function index()
     {
-    	$ads = Auth::user()->ads()->get();
-    	$data = [
-    		'ads' => $ads,
-    	];
+        $ads = Auth::user()->ads()->get();
+        $data = [
+            'ads' => $ads,
+        ];
 
- 		return view('profile.profile',$data);
+        return view('profile.profile', $data);
     }
 
 
