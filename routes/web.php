@@ -24,9 +24,9 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::group(['prefix' => 'profile'], function () {
         Route::get('/', ['as' => 'profile', 'uses' => 'ProfileController@index']);
-        Route::get('/ad/new', ['as' => 'newAd', 'uses' => 'ProfileController@newAd']);
-        Route::post('/ad/new', ['as' => 'createAd', 'uses' => 'ProfileController@createAd']);
-        Route::get('/ad/show/{id}', ['as' => 'showAd', 'uses' => 'ProfileController@showAd']);
+        Route::get('/ad/new', ['as' => 'newAd', 'uses' => 'AdvertisementController@newAdvertisementView']);
+        Route::post('/ad/new', ['as' => 'createAd', 'uses' => 'AdvertisementController@createAd']);
+        Route::get('/ad/show/{id}', ['as' => 'showAd', 'uses' => 'AdvertisementController@showAd']);
     });	
 
 });

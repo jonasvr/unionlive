@@ -21,4 +21,8 @@ class Shedule extends Model
     {
         return $this->belongsTo('App\Orders');
     }
+
+    public function countSlot($slot){
+        return $this->where("slot",$slot)->count();
+    }
 }

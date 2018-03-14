@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
          $this->call(UsersTableSeeder::class);
          $this->call(HoursTableSeeder::class);
          $this->call(DaysTableSeeder::class);
+//         $this->call(SlotTestSeeder::class);
     }
 }

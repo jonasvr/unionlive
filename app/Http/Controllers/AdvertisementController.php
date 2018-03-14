@@ -1,0 +1,186 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Ad;
+use App\Days;
+use App\Hours;
+use App\Http\Requests\CreateAdRequest;
+use App\Orders;
+use App\Shedule;
+use App\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use PhpParser\Node\Stmt\While_;
+
+class AdvertisementController extends Controller
+{
+
+    protected $user, $ad, $hours, $days, $orders, $shedule;
+    Private $disk = 'uploads';
+
+    public function __construct(User $user, Ad $ad, Days $days, Hours $hours, Shedule $shedule, Orders $orders)
+    {
+        $this->user = $user;
+        $this->ad = $ad;
+        $this->hours = $hours;
+        $this->days = $days;
+        $this->orders = $orders;
+        $this->shedule = $shedule;
+    }
+
+    public function newAdvertisementView()
+    {
+        //todo: have to give busy date or javascript and update according.
+        $data = [
+            'days' => $this->days->all(),
+            'hours' => $this->hours->all(),
+        ];
+
+        return view('profile.newAd', $data);
+    }
+
+    public function createAd(CreateAdRequest $request)
+    {
+        $ad = $this->createAdDataBase($request);
+        $order = $this->createOrder($request, $ad->id);
+        $this->createShedule($request, $ad->id, $order->id);
+
+        return redirect('profile')->with('success', 'ad added!');
+    }
+
+    public function showAd($id)
+    {
+        $ad = $this->ad->find($id);
+        $shedule = $ad->shedule()->get();
+        $order = $ad->order()->first();
+        $data = [
+            'path_art' => $this->buildUrl($ad->path_art),
+            'path_audio' => url('/') . '/' . $this->buildUrl($ad->path_audio),
+            'title' => $ad->title,
+            'shedule' => $shedule,
+            'order' => $order,
+        ];
+
+        return view('profile.ad', $data);
+    }
+
+    //region helpers
+
+    private function buildUrl($path)
+    {
+        return $this->disk . '/' . $path;
+    }
+
+    private function createAdDataBase($request)
+    {
+        $dbData = [
+            'title' => $request->title,
+            'user_id' => Auth::id(),
+        ];
+
+        $dbData = $this->checkUploadFile($request->file('artFile'), $dbData,'art');
+        $dbData = $this->checkUploadFile($request->file('artFile'), $dbData,'audio');
+
+        if ($ad = $this->ad->create($dbData)) {
+            return $ad;
+        } else {
+            return back()->with('error', 'something went wrong at file uploads, try again');
+        }
+
+    }
+
+    private function createShedule($request, $adId, $order_id)
+    {
+
+        $days = $request->days;
+        $hours = $request->hours;
+        $weeks = $request->weeks;
+
+        $data = [
+            'user_id' => Auth::id(),
+            'ad_id' => $adId,
+            'order_id' => $order_id, //to change
+        ];
+
+        for ($week = 0; $week <= $weeks; $week++) {
+            foreach ($days as $day) {
+                $date = new Carbon('next ' . $day);
+                $dateWithWeek = $date->addWeeks($week);
+                foreach ($hours as $hour) {
+                    $splitHour = explode(":", $hour);
+                    $dateWithHour = $dateWithWeek->copy();
+                    $dateWithHour->addHours((int)$splitHour[0]);
+                    $data = $this->checkAvailability($dateWithHour, $data);
+                    $this->shedule->create($data);
+                }
+            }
+        }
+
+    }
+
+
+    private function createOrder($request, $adId)
+    {
+        $days = $request->days;
+        $hours = $request->hours;
+        $weeks = $request->weeks;
+
+        $total = sizeof($hours) * sizeof($days) * $weeks;
+        $pricePerAd = 10;
+
+        $data = [
+            'user_id' => Auth::id(),
+            'ad_id' => $adId,
+            'price' => $pricePerAd * $total,
+        ];
+
+        if ($orders = $this->orders->create($data)) {
+            return $orders;
+        } else {
+            return back()->with('error', 'something went wrong at creating order, try again');
+        }
+    }
+
+    /**
+     * @param $dateWithHour
+     * @param $data
+     * @return mixed
+     *
+     */
+    //todo: alround checken if not every slot is filled + hardcoded weg werkengot
+    private function checkAvailability($dateWithHour, $data)
+    {
+        $count = $this->shedule->countSlot($dateWithHour);
+        if ($count < 5)
+            $data['slot'] = $dateWithHour;
+        else {
+            $addHour = $dateWithHour->copy()->addHour();
+            $subHour = $dateWithHour->copy()->subHour();
+            if ($addHour->hour < 23)
+                $data['slot'] = $addHour;
+            elseif ($subHour > 18)
+                $data['slot'] = $subHour;
+            }
+        return $data;
+    }
+
+    /**
+     * @param $FileData
+     * @param $dbData
+     * @param $dbName
+     * @return mixed
+     */
+    private function checkUploadFile($FileData, $dbData, $dbName)
+    {
+        if ($FileData != null) {
+            $File = Storage::disk('uploads')->put('art', $FileData);
+            $dbData['path_'.$dbName] = $File;
+        }
+        return $dbData;
+    }
+
+    //endregion
+}
