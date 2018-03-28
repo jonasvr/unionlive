@@ -10,6 +10,7 @@ use App\Orders;
 use App\Shedule;
 use App\User;
 use Carbon\Carbon;
+use http\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -45,7 +46,7 @@ class AdvertisementController extends Controller
     public function createAd(CreateAdRequest $request)
     {
         $ad = $this->createAdDataBase($request);
-        $order = $this->createOrder($request, $ad->id);
+        $order = $this->createOrder($request, $ad->id, $request->price);
         $this->createShedule($request, $ad->id, $order->id);
 
         return redirect('profile')->with('success', 'ad added!');
@@ -56,6 +57,7 @@ class AdvertisementController extends Controller
         $ad = $this->ad->find($id);
         $shedule = $ad->shedule()->get();
         $order = $ad->order()->first();
+//        dd($order);
         $data = [
             'path_art' => $this->buildUrl($ad->path_art),
             'path_audio' => url('/') . '/' . $this->buildUrl($ad->path_audio),
@@ -74,27 +76,44 @@ class AdvertisementController extends Controller
         return $this->disk . '/' . $path;
     }
 
+    /**
+     * @param $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     private function createAdDataBase($request)
     {
+//        dd($request->all());
         $dbData = [
             'title' => $request->title,
             'user_id' => Auth::id(),
         ];
 
-        $dbData = $this->checkUploadFile($request->file('artFile'), $dbData,'art');
-        $dbData = $this->checkUploadFile($request->file('artFile'), $dbData,'audio');
+        $dbData = $this->checkUploadFile($request->file('artFile'), $dbData, 'art');
+        $dbData = $this->checkUploadFile($request->file('audioFile'), $dbData, 'audio');
 
-        if ($ad = $this->ad->create($dbData)) {
+        try {
+            $ad = $this->ad->create($dbData);
             return $ad;
-        } else {
+        } catch (Exception $e) {
             return back()->with('error', 'something went wrong at file uploads, try again');
         }
 
+//        if ($ad = $this->ad->create($dbData)) {
+//            return $ad;
+//        } else {
+//            return back()->with('error', 'something went wrong at file uploads, try again');
+//        }
+
     }
 
+    /**
+     * @param $request
+     * @param $adId
+     * @param $order_id
+     * todo:error message if create fails
+     */
     private function createShedule($request, $adId, $order_id)
     {
-
         $days = $request->days;
         $hours = $request->hours;
         $weeks = $request->weeks;
@@ -121,20 +140,17 @@ class AdvertisementController extends Controller
 
     }
 
-
-    private function createOrder($request, $adId)
+    /**
+     * @param $request
+     * @param $adId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function createOrder($request, $adId, $price)
     {
-        $days = $request->days;
-        $hours = $request->hours;
-        $weeks = $request->weeks;
-
-        $total = sizeof($hours) * sizeof($days) * $weeks;
-        $pricePerAd = 10;
-
         $data = [
             'user_id' => Auth::id(),
             'ad_id' => $adId,
-            'price' => $pricePerAd * $total,
+            'price' => $price,
         ];
 
         if ($orders = $this->orders->create($data)) {
@@ -163,22 +179,24 @@ class AdvertisementController extends Controller
                 $data['slot'] = $addHour;
             elseif ($subHour > 18)
                 $data['slot'] = $subHour;
-            }
+        }
         return $data;
     }
 
     /**
-     * @param $FileData
+     * @param $fileData
      * @param $dbData
      * @param $dbName
      * @return mixed
      */
-    private function checkUploadFile($FileData, $dbData, $dbName)
+    private function checkUploadFile($fileData, $dbData, $dbName)
     {
-        if ($FileData != null) {
-            $File = Storage::disk('uploads')->put('art', $FileData);
-            $dbData['path_'.$dbName] = $File;
+        $file = null;
+        if ($fileData != null) {
+            $file = Storage::disk('uploads')->put('art', $fileData);
         }
+        $dbData['path_' . $dbName] = $file;
+
         return $dbData;
     }
 

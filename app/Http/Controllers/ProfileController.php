@@ -32,7 +32,7 @@ class ProfileController extends Controller
 
     public function index()
     {
-        $ads = Auth::user()->ads()->get();
+        $ads = Auth::user()->ads()->paginate(3);
         $data = [
             'ads' => $ads,
         ];
