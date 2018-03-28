@@ -206,17 +206,23 @@
                             </div>
                         @endforeach
                     </div>
+                        <input class="hidden" id="input-price" type="input" name="price" value=0>
 
-                <div class="col-md-12">
+                        <div class="col-md-12">
                     <button type="submit" class="btn btn-default">Submit</button>
                 </div>
       				</div>
       			</div>
 
-      		</section>
+          </section>
 
       {{ Form::close()}}
         </div>
     </div>
 </div>
+@endsection
+
+@section("scrollScripts")
+    <script src="{{ asset('js/priceCalculator.js') }}"></script>
+    <script src="{{ asset('js/jquery.scrollify.js') }}"></script>
 @endsection

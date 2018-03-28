@@ -31,6 +31,9 @@
                             </a>
                         @endforeach
                     </div>
+                    <div class="row">
+                        <center>{{ $ads->links() }}</center>
+                    </div>
                 </div>
             </div>
         </div>
