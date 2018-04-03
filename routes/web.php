@@ -27,6 +27,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/ad/new', ['as' => 'newAd', 'uses' => 'AdvertisementController@newAdvertisementView']);
         Route::post('/ad/new', ['as' => 'createAd', 'uses' => 'AdvertisementController@createAd']);
         Route::get('/ad/show/{id}', ['as' => 'showAd', 'uses' => 'AdvertisementController@showAd']);
-    });	
+    });
+
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('/shedule', ['as' => 'shedule', 'uses' => 'AdminController@shedule']);
+    });
 
 });
